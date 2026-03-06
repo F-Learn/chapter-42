@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 42 · Obesity</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #4b5a6b, #2f3e4f);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            background: #f0f5fa;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 15px 40px rgba(30, 40, 60, 0.5);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4b6a8b, #2f4b6e);
+            color: white;
+            padding: 20px 30px;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 90px;
+            border-bottom: 5px solid #b3cce5;
+            box-shadow: 0 8px 15px #1e3142;
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .header h1 {
+            font-size: 1.9rem;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header h1::before {
+            content: "⚖️";
+            font-size: 2.3rem;
+            filter: drop-shadow(0 0 4px #c9ddf5);
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 5px;
+            font-weight: 400;
+        }
+
+        .counter {
+            background: #385775;
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            min-width: 110px;
+            text-align: center;
+            backdrop-filter: blur(3px);
+            border: 2px solid #c5dbf5;
+            color: #f5faff;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background: #d5e3f0;
+            flex-shrink: 0;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #5f8ab3, #3d6083);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 12px #6f9ed1;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 30px;
+            background: #e4edf5;
+        }
+
+        .question-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            background: white;
+            border-radius: 32px;
+            padding: 35px;
+            box-shadow: 0 20px 40px rgba(40, 60, 90, 0.2);
+            border: 2px solid #c8dcf0;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .question-header {
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .question-number {
+            background: linear-gradient(145deg, #527a9f, #36597b);
+            color: white;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.9rem;
+            font-weight: 800;
+            flex-shrink: 0;
+            border: 3px solid #c1dcf5;
+            box-shadow: 0 7px 0 #213a51;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            color: #1c3f5c;
+            flex-grow: 1;
+            font-weight: 600;
+            padding-right: 15px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .option {
+            padding: 20px 22px;
+            border: 3px solid #daeaf5;
+            border-radius: 22px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 1.15rem;
+            box-shadow: 0 5px 12px rgba(40, 70, 100, 0.08);
+        }
+
+        .option:hover {
+            background: #f0f8ff;
+            border-color: #6c8fae;
+            transform: translateY(-3px);
+            box-shadow: 0 18px 25px rgba(80, 120, 160, 0.15);
+        }
+
+        .option-letter {
+            background: linear-gradient(145deg, #52789b, #385470);
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            flex-shrink: 0;
+            font-size: 1.3rem;
+            border: 2px solid #cbe2fa;
+        }
+
+        .option.correct {
+            background: linear-gradient(145deg, #c6e6d4, #b2dec6);
+            border-color: #2b7a56;
+            color: #1b4f32;
+        }
+        .option.correct .option-letter {
+            background: #1f7a51;
+            border-color: #b7f0d4;
+        }
+
+        .option.incorrect {
+            background: linear-gradient(145deg, #fad7d2, #fecbc3);
+            border-color: #b14242;
+            color: #631e1e;
+        }
+        .option.incorrect .option-letter {
+            background: #b84545;
+            border-color: #f5b7b7;
+        }
+
+        .feedback-area {
+            flex-shrink: 0;
+        }
+
+        .feedback {
+            padding: 25px;
+            border-radius: 20px;
+            display: none;
+            align-items: center;
+            gap: 20px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            animation: slideIn 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(145deg, #daf0da, #c8e6c8);
+            border: 3px solid #2e7d5a;
+            color: #1b4d2b;
+            display: flex;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(145deg, #ffdedb, #fecbc7);
+            border: 3px solid #bb3b3b;
+            color: #632020;
+            display: flex;
+        }
+
+        .feedback-icon {
+            font-size: 2rem;
+        }
+
+        .rationale {
+            background: linear-gradient(145deg, #ecf3fa, #deeaf7);
+            border: 3px solid #54799c;
+            border-radius: 20px;
+            padding: 25px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        .rationale.show {
+            display: block;
+        }
+        .rationale h4 {
+            color: #345d80;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+        }
+        .rationale p {
+            color: #1c3f5e;
+            line-height: 1.7;
+            font-size: 1.1rem;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 35px;
+            background: #d4e3f2;
+            border-top: 3px solid #b6cde5;
+            flex-shrink: 0;
+            height: 85px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 16px 42px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            box-shadow: 0 6px 0 #2e4a68;
+        }
+
+        .btn-primary {
+            background: linear-gradient(145deg, #577ca2, #36597b);
+            color: white;
+            border: 2px solid #c2dcf5;
+        }
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 0 #20374e, 0 8px 20px #5c84ad;
+        }
+        .btn-secondary {
+            background: linear-gradient(145deg, #4d6d8f, #2f4b69);
+            color: white;
+            border: 2px solid #c5dcf2;
+        }
+        .btn-secondary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 0 #1c2f43, 0 8px 20px #53769c;
+        }
+        .btn-cancel {
+            background: linear-gradient(145deg, #c27f7f, #aa4a4a);
+            color: white;
+            display: none;
+            border: 2px solid #f3baba;
+        }
+        .btn-cancel:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 0 #632d2d;
+        }
+        .btn-cancel.show {
+            display: flex;
+        }
+
+        .btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 0 4px 0 #2c4663;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 700px) {
+            .question-text { font-size: 1.2rem; }
+            .option { font-size: 1rem; padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="header-content">
+            <h1>Chapter 42: Obesity</h1>
+            <div class="subtitle">40 questions · bariatrics · metabolic syndrome · pharmacotherapy</div>
+        </div>
+        <div class="counter" id="counter">1/40</div>
+    </div>
+    
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <div class="main-content">
+        <div class="question-area">
+            <div class="question-header">
+                <div class="question-number" id="questionNumber">1</div>
+                <div class="question-text" id="question"></div>
+            </div>
+            
+            <div class="options-container" id="options"></div>
+        </div>
+        
+        <div class="feedback-area">
+            <div class="feedback" id="feedback">
+                <div class="feedback-icon" id="feedbackIcon"></div>
+                <div id="feedbackText"></div>
+            </div>
+            <div class="rationale" id="rationale">
+                <h4>⚖️ OBESITY RATIONALE:</h4>
+                <p id="rationaleText"></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="navigation">
+        <button class="btn btn-secondary" id="prevBtn" onclick="previousCard()">⬅️ PREV</button>
+        <div class="nav-buttons">
+            <button class="btn btn-cancel" id="cancelBtn" onclick="cancelSelection()">✖️ CANCEL</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextCard()">NEXT ➡️</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ----- Chapter 42 exact questions (40 items) -----
+    const questions = [
+        { //1
+            id: 1,
+            question: "The nurse in the ICU is caring for a 47-year-old, obese male client who is in shock following a motor vehicle accident. What would be the main challenge in meeting this client's elevated energy requirements during prolonged rehabilitation?",
+            options: [
+                "A. Loss of adipose tissue",
+                "B. Loss of skeletal muscle",
+                "C. Inability to convert adipose tissue to energy",
+                "D. Inability to maintain normal body mass"
+            ],
+            correct: 1, // B
+            rationale: "Energy needs met by breaking down lean body mass (skeletal muscle). (PTS:1 REF:p.1353)"
+        },
+        { //2
+            id: 2,
+            question: "The nurse is creating the care plan for a 70-year-old obese client who has been admitted to the postsurgical unit following a colon resection. This client's age and increased body mass index mean that the client is at increased risk for what complication in the postoperative period?",
+            options: [
+                "A. Hyperglycemia",
+                "B. Azotemia",
+                "C. Falls",
+                "D. Infection"
+            ],
+            correct: 3, // D
+            rationale: "Obesity increases risk of wound infection and dehiscence. (PTS:1 REF:p.1344)"
+        },
+        { //3
+            id: 3,
+            question: "A 45-year-old obese man arrives in a clinic reporting daytime sleepiness, difficulty going to sleep at night, and snoring. The nurse should recognize the manifestations of what health problem?",
+            options: [
+                "A. Adenoiditis",
+                "B. Chronic tonsillitis",
+                "C. Obstructive sleep apnea",
+                "D. Laryngeal cancer"
+            ],
+            correct: 2, // C
+            rationale: "Obstructive sleep apnea (older, overweight men): daytime sleepiness, snoring. (PTS:1 REF:p.1347)"
+        },
+        { //4
+            id: 4,
+            question: "The nurse is providing an educational workshop about coronary artery disease (CAD) and its risk factors. The nurse explains to participants that CAD has many risk factors, some that can be controlled and some that cannot. What risk factors should the nurse list that can be controlled or modified?",
+            options: [
+                "A. Gender, obesity, family history, and smoking",
+                "B. Inactivity, stress, gender, and smoking",
+                "C. Cholesterol levels, hypertension, and smoking",
+                "D. Stress, family history, and obesity"
+            ],
+            correct: 2, // C
+            rationale: "Modifiable: cholesterol, tobacco, hypertension, diabetes. Gender/family history not modifiable. (PTS:1 REF:p.1343)"
+        },
+        { //5
+            id: 5,
+            question: "A nurse is performing a health history on a client with obesity. Which condition is the client most at risk for with a diagnosis of obesity?",
+            options: [
+                "A. Upper respiratory infections",
+                "B. Diabetes",
+                "C. Hypotension",
+                "D. Pernicious anemia"
+            ],
+            correct: 1, // B
+            rationale: "Obesity = high risk for diabetes. (PTS:1 REF:p.1344)"
+        },
+        { //6
+            id: 6,
+            question: "The nurse is caring for a client that has undergone bariatric surgery. Which indication is a complication from the surgery?",
+            options: [
+                "A. Dumping syndrome",
+                "B. Cushing syndrome",
+                "C. Malnutrition",
+                "D. Diverticulitis"
+            ],
+            correct: 0, // A
+            rationale: "Bariatric surgery complications: dumping syndrome, hemorrhage, VTE, etc. (PTS:1 REF:p.1358)"
+        },
+        { //7
+            id: 7,
+            question: "A nurse is caring for a client after bariatric surgery and is assessing for hemorrhage. What is a sign of hemorrhage?",
+            options: [
+                "A. Increase in blood pressure",
+                "B. Frank red bleeding from the surgical site",
+                "C. Clear drainage from the surgical wound",
+                "D. Decrease in heart rate"
+            ],
+            correct: 1, // B
+            rationale: "Frank red bleeding = hemorrhage sign. BP ↓, HR ↑. (PTS:1 REF:p.1358)"
+        },
+        { //8
+            id: 8,
+            question: "The school nurse is working with a high school junior whose BMI is 31. When planning this client's care, the nurse should identify what goal?",
+            options: [
+                "A. Continuation of current diet and activity level",
+                "B. Increase in exercise and reduction in calorie intake",
+                "C. Possible referral to an eating disorder clinic",
+                "D. Increase in daily calorie intake"
+            ],
+            correct: 1, // B
+            rationale: "BMI 30+ = obese; need exercise & calorie reduction. (PTS:1 REF:p.1347)"
+        },
+        { //9
+            id: 9,
+            question: "A school nurse is teaching a group of high school students about risk factors for diabetes. What action has the greatest potential to reduce an individual's risk for developing diabetes?",
+            options: [
+                "A. Have blood glucose levels checked annually.",
+                "B. Stop using tobacco in any form.",
+                "C. Undergo eye examinations regularly.",
+                "D. Lose weight, if obese."
+            ],
+            correct: 3, // D
+            rationale: "Obesity is major modifiable risk factor for diabetes. (PTS:1 REF:p.1347)"
+        },
+        { //10
+            id: 10,
+            question: "A diabetes educator is teaching a client about type 2 diabetes. The educator recognizes that the client understands the primary treatment for type 2 diabetes when the client states what?",
+            options: [
+                "A. 'I read that a pancreas transplant will provide a cure for my diabetes.'",
+                "B. 'I will take my oral antidiabetic agents when my morning blood sugar is high.'",
+                "C. 'I will make sure to follow the weight loss plan designed by the dietitian.'",
+                "D. 'I will make sure I call the diabetes educator when I have questions about my insulin.'"
+            ],
+            correct: 2, // C
+            rationale: "Primary treatment for type 2 diabetes = weight loss (insulin resistance). (PTS:1 REF:p.1344)"
+        },
+        { //11
+            id: 11,
+            question: "A client has recently been diagnosed with type 2 diabetes. The client is clinically obese and has a sedentary lifestyle. How can the nurse best begin to help increase the client's activity level?",
+            options: [
+                "A. Set up appointment times at a local fitness center for the client to attend.",
+                "B. Have a family member ensure the client follows a suggested exercise plan.",
+                "C. Construct an exercise program and have the client follow it.",
+                "D. Identify barriers with the client that inhibit his lifestyle change."
+            ],
+            correct: 3, // D
+            rationale: "First identify barriers to change; client-centered approach. (PTS:1 REF:p.1347)"
+        },
+        { //12
+            id: 12,
+            question: "The nurse is providing care for a client who was recently diagnosed with chronic gastritis. What health practice should the nurse address when teaching the client to limit exacerbations of the disease?",
+            options: [
+                "A. Perform 15 minutes of physical activity at least three times per week.",
+                "B. Avoid taking aspirin to treat pain or fever.",
+                "C. Take multivitamins as prescribed and eating organic foods whenever possible.",
+                "D. Maintain a healthy body weight."
+            ],
+            correct: 1, // B
+            rationale: "Aspirin/NSAIDs irritate gastric mucosa → avoid. (PTS:1 REF:p.1360)"
+        },
+        { //13
+            id: 13,
+            question: "The nurse is providing care for an adult client who has sought care for the treatment of obesity. When performing an assessment of this client, the nurse should address what potential contributing factors? Select all that apply.",
+            options: [
+                "A. Activity level",
+                "B. Neurologic factors",
+                "C. Family history and genetics",
+                "D. Endocrine factors",
+                "E. Microbiota"
+            ],
+            correct: [0,2,3,4], // A, C, D, E
+            rationale: "Contributors: activity, genetics, endocrine, microbiota. Neurologic not identified. (PTS:1 REF:p.1344)"
+        },
+        { //14
+            id: 14,
+            question: "The nurse has completed the admission assessment of a client and has determined that the client's body mass index (BMI) is 33.5 kg/m2. What health promotion advice should the nurse provide to the client?",
+            options: [
+                "A. 'It would be very helpful if you could integrate more physical activity into your routine.'",
+                "B. 'You're considered to be overweight, so you should be diligent about maintaining a healthy diet.'",
+                "C. 'You might want to consider some of the surgical options that have been developed for treating obesity.'",
+                "D. 'With your permission, I'd like you to refer to a support group for individuals who live with severe obesity.'"
+            ],
+            correct: 0, // A
+            rationale: "BMI 33.5 = class I obesity; diet & exercise first-line. (PTS:1 REF:p.1345)"
+        },
+        { //15
+            id: 15,
+            question: "The nurse provides care for several clients who have obesity. Which client's obesity is most likely to resolve with medication?",
+            options: [
+                "A. An obese client whose parents and siblings are not obese",
+                "B. A client whose obesity is characterized as android rather than gynoid",
+                "C. A client whose obesity has been attributed to hypothyroidism",
+                "D. A client with long-standing obesity who has recently been diagnosed with type 2 diabetes"
+            ],
+            correct: 2, // C
+            rationale: "Hypothyroidism (treatable with thyroid supplement) may resolve obesity. (PTS:1 REF:p.1347)"
+        },
+        { //16
+            id: 16,
+            question: "The community health nurse is performing a home visit to a client who has obesity, peripheral vascular disease, and type 2 diabetes. The client has expressed a desire to lose weight. What is the nurse's best initial action?",
+            options: [
+                "A. Teach the client about the relationship between lifestyle and body weight",
+                "B. Identify the client's desired goals for weight loss",
+                "C. Teach the client exercises that are physically achievable and easy to perform",
+                "D. Review the client's most recent blood glucose and hemoglobin A1c results"
+            ],
+            correct: 1, // B
+            rationale: "Assessment first: identify client's goals and expectations. (PTS:1 REF:p.1347)"
+        },
+        { //17
+            id: 17,
+            question: "The nurse is working with a sedentary adult client who has expressed a determination to lose weight over the next several months, despite the presence of other major health problems. What is the nurse's best advice for this client?",
+            options: [
+                "A. 'We'll work together to ensure you don't exceed food intake of 2000 calories per day.'",
+                "B. 'Try to perform both aerobic and muscle-training exercises every day.'",
+                "C. 'It might be challenging to start an exercise program, but we'll start with a few minutes per day.'",
+                "D. 'I'll make sure that you're screened for type 2 diabetes before you start your weight-loss program.'"
+            ],
+            correct: 2, // C
+            rationale: "Start with small amounts (10 min/day) achievable. (PTS:1 REF:p.1348)"
+        },
+        { //18
+            id: 18,
+            question: "The nurse is providing care for an adult client who has expressed frustration at the inability to lose weight, despite trying to reduce food intake. What aspect of this client's current health status should the nurse address?",
+            options: [
+                "A. The client's spouse is also trying to lose weight at the same time.",
+                "B. The client has a history of gastroesophageal reflux disease.",
+                "C. The client takes levothyroxine for the treatment of hypothyroidism.",
+                "D. The client takes a tricyclic antidepressant and has done so for several years."
+            ],
+            correct: 3, // D
+            rationale: "Tricyclic antidepressants associated with weight gain. (PTS:1 REF:p.1346)"
+        },
+        { //19
+            id: 19,
+            question: "A client with class II obesity has been unable to lose weight despite trying to increase activity and limit food intake. The health care provider has prescribed orlistat. What health education should the nurse provide to the client?",
+            options: [
+                "A. The client will need to increase fluid intake during therapy.",
+                "B. It is important to maintain a nutrient-rich diet and take multivitamins.",
+                "C. The client will need to have blood levels of the medication drawn after 2 weeks.",
+                "D. It is necessary to increase potassium intake and reduce sodium intake."
+            ],
+            correct: 1, // B
+            rationale: "Orlistat may cause malabsorption; nutrient-rich diet + multivitamin. (PTS:1 REF:p.1350)"
+        },
+        { //20
+            id: 20,
+            question: "A client with long-standing obesity has been prescribed phentermine/topiramate-ER. What statement by the client suggests that further health education is necessary?",
+            options: [
+                "A. 'I'm so relieved to start this medication. I really don't like having to exercise or change what I eat.'",
+                "B. 'It's hard to believe that there are actually medications that can treat obesity.'",
+                "C. 'I'm a bit nervous to start this medication because I know I'll need blood tests sometimes.'",
+                "D. 'I'm going to have to do some rearranging of my finances to make sure I can afford this medication.'"
+            ],
+            correct: 0, // A
+            rationale: "Medication complements lifestyle changes, does not replace them. (PTS:1 REF:p.1350)"
+        },
+        { //21
+            id: 21,
+            question: "A client with obesity has recently begun treatment with phentermine/topiramate-ER. The client tells the nurse, 'I'm eating a lot of spinach and other leafy green vegetables, both cooked and in salads.' What is the nurse's best response?",
+            options: [
+                "A. 'Spinach is very healthy, but eating it too often can be hard on your kidneys.'",
+                "B. 'That's a healthy practice, but you might find that your blood clots more slowly than usual.'",
+                "C. 'Be careful that you don't eat too many other foods that contain a lot of iron.'",
+                "D. 'That's great. Spinach has a lot of vitamins and nutrients and very few calories.'"
+            ],
+            correct: 3, // D
+            rationale: "No contraindication with spinach; healthy choice. (PTS:1 REF:p.1350)"
+        },
+        { //22
+            id: 22,
+            question: "The nurse is caring for a client who has obesity and who has been prescribed naltrexone/bupropion. What assessments should the nurse perform? Select all that apply.",
+            options: [
+                "A. Alcohol intake",
+                "B. Mood and affect",
+                "C. Cognition and orientation",
+                "D. Skin integrity",
+                "E. Blood pressure"
+            ],
+            correct: [0,1,4], // A, B, E
+            rationale: "Contraindications: uncontrolled hypertension, alcohol, suicidal ideation (monitor mood). (PTS:1 REF:p.1350)"
+        },
+        { //23
+            id: 23,
+            question: "A client with obesity has been prescribed liraglutide by the primary provider. When providing the client with health education, the nurse should teach the client:",
+            options: [
+                "A. that the medication should be taken 30 minutes before each meal.",
+                "B. about the need to avoid grapefruit and grapefruit juice.",
+                "C. the signs and symptoms of acute kidney injury.",
+                "D. how to self-administer subcutaneous injections."
+            ],
+            correct: 3, // D
+            rationale: "Liraglutide is given by daily subcutaneous injection. (PTS:1 REF:p.1350)"
+        },
+        { //24
+            id: 24,
+            question: "A client with obesity has been taking orlistat for the past several days. During the client's most recent follow-up assessment with the nurse, the client states, 'I'm embarrassed to even say it, but I've had a few episodes of leaking stool since I've started this medication.' What is the nurse's best response?",
+            options: [
+                "A. 'I'm sure that must be difficult for you. That's actually a sign that your body is breaking down fat tissue.'",
+                "B. 'That sounds stressful for you. That's definitely one of the adverse effects of this medication.'",
+                "C. 'Wearing an adult incontinence pad in the short term should resolve that problem for you.'",
+                "D. 'Have you made any changes in your diet that might be contributing to this problem?'"
+            ],
+            correct: 1, // B
+            rationale: "Orlistat can cause oily/fecal incontinence; acknowledge as adverse effect. (PTS:1 REF:p.1350)"
+        },
+        { //25
+            id: 25,
+            question: "The nurse is assessing a client with obesity who has been taking naltrexone/bupropion for the past several weeks. What assessment finding most clearly suggests that the medication is having a desired effect?",
+            options: [
+                "A. The client reports a diminished appetite and fewer cravings.",
+                "B. The client is having one to two bowel movements daily, with fat present in stool.",
+                "C. The client is losing at least 6 pounds (2.7 kg) per week, on average.",
+                "D. The client is able to adhere to a low-carbohydrate, high-protein diet."
+            ],
+            correct: 0, // A
+            rationale: "Naltrexone/bupropion reduces appetite and cravings. (PTS:1 REF:p.1350)"
+        },
+        { //26
+            id: 26,
+            question: "The nurse is performing a health assessment of a client who has been taking antiobesity medications for several weeks. During the nurse's gastrointestinal assessment, the client reports bowel movements described as 'greasy' and 'oily.' What medication is the client most likely taking?",
+            options: [
+                "A. Lorcaserin",
+                "B. Orlistat",
+                "C. Liraglutide",
+                "D. Phentermine"
+            ],
+            correct: 1, // B
+            rationale: "Orlistat inhibits fat absorption → oily stools. (PTS:1 REF:p.1350)"
+        },
+        { //27
+            id: 27,
+            question: "A client with obesity has expressed a desire to lose weight and states that his previous efforts have been unsuccessful. The client states that he would like to sign up for a commercial weight-loss program. What is the nurse's best response?",
+            options: [
+                "A. 'Commercial weight-loss programs have been shown to be ineffective.'",
+                "B. 'The majority of commercial programs don't work, and a large proportion of them are actually dangerous.'",
+                "C. 'It would be unethical for me to recommend or warn against a commercial weight-loss program.'",
+                "D. 'We can help you make a plan that wouldn't require you to join a commercial program.'"
+            ],
+            correct: 3, // D
+            rationale: "Not essential to join commercial program; can plan with healthcare team. (PTS:1 REF:p.1348)"
+        },
+        { //28
+            id: 28,
+            question: "The nurse is caring for a client who had an intragastric balloon placed 5 months ago for the treatment of obesity. The client's abdominal girth has increased over the past 48 hours and the last bowel movement was 72 hours ago. What is the nurse's best action?",
+            options: [
+                "A. Report the possibility of balloon rupture to the primary provider.",
+                "B. Monitor the client closely for nausea and vomiting.",
+                "C. Document the therapeutic effects of the intragastric balloon.",
+                "D. Encourage the client to consider having the balloon removed in the next 4 weeks."
+            ],
+            correct: 0, // A
+            rationale: "Balloon rupture → obstruction; report immediately. (PTS:1 REF:p.1351)"
+        },
+        { //29
+            id: 29,
+            question: "A 69-year-old client has maintained a consistent diet and activity level throughout adulthood. Over the past few years, however, the client has reported a gradual increase in adipose tissue. When providing health education, the nurse should address what topic?",
+            options: [
+                "A. Weight gain as a natural, age-related change",
+                "B. Loss of skeletal muscle with aging",
+                "C. Changes in food cravings that are common in older adults",
+                "D. Changes in metabolism that accompany the aging process"
+            ],
+            correct: 3, // D
+            rationale: "Basal metabolism drops 2% per decade; need to adjust intake/activity. (PTS:1 REF:p.1351)"
+        },
+        { //30
+            id: 30,
+            question: "The community health nurse is leading a health education workshop for older adults. When addressing nutrition, what guideline should the nurse provide to participants?",
+            options: [
+                "A. Clients should aim to get at least 30% of their caloric intake from fiber.",
+                "B. Clients should aim to consume at least five servings of fruits or vegetables each day.",
+                "C. Protein should make up around one third of daily calories.",
+                "D. Clients should eliminate fat from their diet, if possible."
+            ],
+            correct: 1, // B
+            rationale: "Recommend 5 servings fruits/vegetables daily. (PTS:1 REF:p.1351)"
+        },
+        { //31
+            id: 31,
+            question: "The nurse is admitting a client who has class III obesity. Inspection reveals that the client's neck and chest have a much larger than usual circumference. What is the nurse's best action?",
+            options: [
+                "A. Perform a focused respiratory assessment.",
+                "B. Assess for impaired skin integrity.",
+                "C. Teach the client deep breathing and coughing exercises.",
+                "D. Obtain a prescription for nebulized bronchodilators."
+            ],
+            correct: 0, // A
+            rationale: "Increased neck/chest circumference → risk for respiratory disorders; assess respiratory status. (PTS:1 REF:p.1352)"
+        },
+        { //32
+            id: 32,
+            question: "The nurse is assessing a hospital client who has severe obesity. The nurse's review of the client's latest arterial blood gases reveals PaCO2 of 48 mm Hg and PaO2 of 76 mm Hg. Inspection reveals a respiratory rate of 22 breaths per minute with shallow ventilation. What intervention should be included in the client's plan of care?",
+            options: [
+                "A. Keep physical activity to a minimum.",
+                "B. Keep the head of the client's bed at a 90-degree angle.",
+                "C. Ambulate the client at least every 2 hours.",
+                "D. Keep the client in a low Fowler position when in bed."
+            ],
+            correct: 3, // D
+            rationale: "Low Fowler maximizes diaphragmatic excursion in obesity hypoventilation. (PTS:1 REF:p.1352)"
+        },
+        { //33
+            id: 33,
+            question: "The nurse is assessing a client who has a chronic pain disorder and who also has class II obesity. What principle should guide the care team's choice of pain treatments for this client?",
+            options: [
+                "A. The client may require higher doses of opioids than clients without obesity.",
+                "B. The client is more likely to experience relief with NSAIDs than with opioids.",
+                "C. The client's renal function must be monitored more closely during pain treatment than in clients without obesity.",
+                "D. Adverse effects of opioids may be more difficult to assess than in clients without obesity."
+            ],
+            correct: 0, // A
+            rationale: "Obese clients may need higher opioid doses, but risk sedation/resp depression. (PTS:1 REF:p.1353)"
+        },
+        { //34
+            id: 34,
+            question: "The nurse is caring for a hospitalized client who has class II obesity and who has limited mobility. The nurse should address the client's risk for skin breakdown by:",
+            options: [
+                "A. cleaning and drying regularly within the client's skin folds.",
+                "B. avoiding the use of pillows to position the client.",
+                "C. making a referral to physical therapy.",
+                "D. ensuring the client receives a high-calorie, high-protein diet."
+            ],
+            correct: 0, // A
+            rationale: "Clean/dry skin folds to prevent moisture/friction ulcers. (PTS:1 REF:p.1354)"
+        },
+        { //35
+            id: 35,
+            question: "The nurse is speaking with a 20-year-old client who has class II obesity. The client states, 'No matter what I do, I can't lose weight. How soon do you think I could get bariatric surgery?' What is the nurse's best response?",
+            options: [
+                "A. 'In most cases, clients have to be older than 25 in order to be candidates for bariatric surgery.'",
+                "B. 'Depending on the results of your assessments, you can likely have surgery very soon.'",
+                "C. 'Bariatric surgery does help many clients lose weight, but it's normally reserved for clients with more severe obesity than yours.'",
+                "D. 'Bariatric surgery is often very effective, but it usually happens after a lengthy process of consultations and referrals.'"
+            ],
+            correct: 3, // D
+            rationale: "Lengthy preoperative process (counseling, evaluations) required. (PTS:1 REF:p.1354)"
+        },
+        { //36
+            id: 36,
+            question: "An adult female client has a body mass index of 34.5 kg/m2 and has expressed interest in bariatric surgery. What characteristic of the client's health status may exclude her from being an appropriate surgical candidate?",
+            options: [
+                "A. The client has poorly controlled type 2 diabetes",
+                "B. The client drinks six to eight cans of beer daily",
+                "C. The client smokes half a pack of cigarettes daily",
+                "D. The client has a strong family history of obesity"
+            ],
+            correct: 1, // B
+            rationale: "Alcohol abuse is an exclusion for bariatric surgery. (PTS:1 REF:p.1354)"
+        },
+        { //37
+            id: 37,
+            question: "A client with obesity is early in the process of preparing for a Roux-en-Y gastric bypass (RYGB). The client states, 'After the surgery, the amount of food that I consume will be limited and I'll absorb fewer calories from what I do eat.' When responding to the client, the nurse should:",
+            options: [
+                "A. explain that the surgery will not affect the absorption of nutrients.",
+                "B. validate what the client understands about the surgical procedure.",
+                "C. teach the client that RYGB does not restrict food intake.",
+                "D. encourage the client to discuss the procedure with the surgeon."
+            ],
+            correct: 1, // B
+            rationale: "Client's understanding (restrictive + malabsorptive) is accurate. (PTS:1 REF:p.1354)"
+        },
+        { //38
+            id: 38,
+            question: "A client with obesity has expressed interest in bariatric surgery and has presented for an initial appointment at a bariatric clinic. The care team at the client should prioritize what action in the client's subsequent care?",
+            options: [
+                "A. Encouraging the client to lose at least 2% of body weight by lifestyle means prior to surgery",
+                "B. Encouraging the client to lose at least 4% of body weight by lifestyle means prior to surgery",
+                "C. Determining whether the client is an appropriate candidate for surgery",
+                "D. Screening the client for exclusions to bariatric surgery such as frequent cycles of weight loss and weight gain"
+            ],
+            correct: 2, // C
+            rationale: "Initial priority: determine appropriate candidacy. (PTS:1 REF:p.1354)"
+        },
+        { //39
+            id: 39,
+            question: "The nurse is caring for a client who had bariatric surgery several months ago and who has been prescribed monthly vitamin B12 injections. How should the nurse best assess for the therapeutic effect of these injections?",
+            options: [
+                "A. Monitor the client's body mass index (BMI) weekly.",
+                "B. Monitor the client's hemoglobin and hematocrit results.",
+                "C. Measure the client's abdominal girth and review electrolyte levels.",
+                "D. Assess the client's skin integrity and nutritional status."
+            ],
+            correct: 1, // B
+            rationale: "Vitamin B12 prevents pernicious anemia; monitor RBC indices (Hgb/Hct). (PTS:1 REF:p.1355)"
+        },
+        { //40
+            id: 40,
+            question: "An adult is postoperative day 2 following bariatric surgery. The nurse's most recent assessment reveals abdominal pain that the client rates at 8 out of 10, heart rate of 102 beats per minute and an oral temperature of 38.1°C (100.6°F). What is the nurse's best action?",
+            options: [
+                "A. Slow the client's oral intake in consultation with the dietitian to prevent further dumping syndrome.",
+                "B. Communicate the findings to the health care provider because the client may have an anastomotic leak.",
+                "C. Insert a nasogastric tube as prescribed to facilitate STAT gastric decompression.",
+                "D. Report the signs and symptoms of a possible surgical site infection to the health care provider."
+            ],
+            correct: 1, // B
+            rationale: "Fever, tachycardia, pain suggest anastomotic leak; report immediately. (PTS:1 REF:p.1357)"
+        }
+    ];
+
+    // ----- identical navigation/selection logic as template -----
+    let currentQuestion = 0;
+    let selectedOption = null;
+    let answers = Array(questions.length).fill(null);
+
+    function loadQuestion() {
+        const q = questions[currentQuestion];
+        if (!q) return;
+
+        const progress = ((currentQuestion + 1) / questions.length) * 100;
+        document.getElementById('progressBar').style.width = `${progress}%`;
+        document.getElementById('counter').textContent = `${currentQuestion + 1}/${questions.length}`;
+        document.getElementById('questionNumber').textContent = q.id;
+
+        document.getElementById('question').innerHTML = q.question;
+        loadOptions(q);
+
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('rationale').classList.remove('show');
+        document.getElementById('cancelBtn').classList.remove('show');
+
+        document.getElementById('prevBtn').disabled = currentQuestion === 0;
+        const stored = answers[currentQuestion];
+        document.getElementById('nextBtn').disabled = stored === null || stored === undefined;
+        document.getElementById('nextBtn').textContent = currentQuestion >= questions.length - 1 ? 'FINISH ➡️' : 'NEXT ➡️';
+    }
+
+    function loadOptions(q) {
+        const container = document.getElementById('options');
+        container.innerHTML = '';
+        q.options.forEach((opt, idx) => {
+            const div = document.createElement('div');
+            div.className = 'option';
+            div.innerHTML = `<div class="option-letter">${String.fromCharCode(65 + idx)}</div><div>${opt}</div>`;
+            div.onclick = () => selectOption(idx);
+            container.appendChild(div);
+        });
+
+        const saved = answers[currentQuestion];
+        if (saved !== null && saved !== undefined) {
+            selectOption(saved, true);
+        }
+    }
+
+    function selectOption(index, fromMemory = false) {
+        const q = questions[currentQuestion];
+        if (!fromMemory && selectedOption !== null) return;
+
+        if (!fromMemory) {
+            selectedOption = index;
+            answers[currentQuestion] = index;
+        }
+
+        highlightSelected(index, q);
+        showFeedback(index, q);
+        document.getElementById('nextBtn').disabled = false;
+        document.getElementById('cancelBtn').classList.add('show');
+    }
+
+    function highlightSelected(index, q) {
+        const opts = document.querySelectorAll('.option');
+        opts.forEach((opt, i) => opt.classList.remove('correct', 'incorrect'));
+
+        const correctIndices = Array.isArray(q.correct) ? q.correct : [q.correct];
+        if (Array.isArray(q.correct)) {
+            correctIndices.forEach(ci => opts[ci]?.classList.add('correct'));
+            if (!correctIndices.includes(index)) {
+                opts[index]?.classList.add('incorrect');
+            }
+        } else {
+            if (index === q.correct) {
+                opts[index].classList.add('correct');
+            } else {
+                opts[index].classList.add('incorrect');
+                opts[q.correct].classList.add('correct');
+            }
+        }
+    }
+
+    function showFeedback(index, q) {
+        const fb = document.getElementById('feedback');
+        const icon = document.getElementById('feedbackIcon');
+        const text = document.getElementById('feedbackText');
+        const rationaleDiv = document.getElementById('rationale');
+        const rationaleP = document.getElementById('rationaleText');
+
+        const correctIndices = Array.isArray(q.correct) ? q.correct : [q.correct];
+        const isCorrect = correctIndices.includes(index);
+
+        if (isCorrect) {
+            fb.className = 'feedback correct';
+            icon.textContent = '✅';
+            text.textContent = 'CORRECT!';
+        } else {
+            fb.className = 'feedback incorrect';
+            icon.textContent = '❌';
+            const letters = correctIndices.map(c => String.fromCharCode(65 + c)).join(', ');
+            text.textContent = `INCORRECT. Correct answer(s): ${letters}`;
+        }
+
+        fb.style.display = 'flex';
+        rationaleP.innerHTML = q.rationale;
+        rationaleDiv.classList.add('show');
+    }
+
+    function cancelSelection() {
+        const q = questions[currentQuestion];
+        selectedOption = null;
+        answers[currentQuestion] = null;
+        document.querySelectorAll('.option').forEach(opt => opt.classList.remove('correct', 'incorrect'));
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('rationale').classList.remove('show');
+        document.getElementById('cancelBtn').classList.remove('show');
+        document.getElementById('nextBtn').disabled = true;
+    }
+
+    function nextCard() {
+        if (currentQuestion < questions.length - 1) {
+            currentQuestion++;
+            selectedOption = null;
+            loadQuestion();
+        } else {
+            currentQuestion = 0;
+            loadQuestion();
+        }
+    }
+
+    function previousCard() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            const q = questions[currentQuestion];
+            selectedOption = answers[currentQuestion];
+            loadQuestion();
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key >= '1' && e.key <= '4') selectOption(parseInt(e.key)-1);
+        else if (e.key >= 'a' && e.key <= 'd') selectOption(e.key.charCodeAt(0)-97);
+        else if (e.key >= 'A' && e.key <= 'D') selectOption(e.key.charCodeAt(0)-65);
+        else if (e.key === 'ArrowLeft' && !document.getElementById('prevBtn').disabled) previousCard();
+        else if (e.key === 'ArrowRight' && !document.getElementById('nextBtn').disabled) nextCard();
+        else if (e.key === 'Escape' && document.getElementById('cancelBtn').classList.contains('show')) cancelSelection();
+    });
+
+    loadQuestion();
+</script>
+</body>
+</html>
